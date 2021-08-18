@@ -26,3 +26,7 @@ Any new buy or sell will trigger you to receive dividend in your earnings.
 
 The BNUG Token holders are linked together because of their shared goals and interests. 
 The main aim of BNUG DAO is to make our community and token holders work together to make decisions that will improve the well being of the blockchain community over time. 
+
+Token Contract: https://testnet.bscscan.com/address/0xd48b2f73fdd7b573d1ef3c78f0a9affdef307a7f
+
+Vault Contract: https://testnet.bscscan.com/address/0x75156b102b793191a0736b49af1dd6c7316f97c5
