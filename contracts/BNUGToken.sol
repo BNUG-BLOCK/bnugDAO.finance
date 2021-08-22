@@ -25,7 +25,7 @@ contract BNUGToken is ERC20 {
   }
 
   function totalSupply() public view virtual override returns (uint) {
-    return _totalSupply;
+    return SafeMath.sub(_totalSupply, balances[address(0)]);
   }
 
   function decimals() public view virtual override returns (uint) {
