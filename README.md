@@ -55,3 +55,6 @@ BNUGLM: Liquidity mining protocol
 DAO: Decentralized autonomous community
 
 
+
+**GovernanceToken: https://testnet.bscscan.com/address/0x51eE0D9FAd1e3F40C4d4f78c31522B8176187521#contracts**
+

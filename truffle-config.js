@@ -18,7 +18,8 @@
  *
  */
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+ const HDWalletProvider = require('@truffle/hdwallet-provider');
+ require('dotenv').config();
 // const infuraKey = "fj4jll3k.....";
 //
 // const fs = require('fs');
@@ -34,6 +35,14 @@ module.exports = {
    *
    * $ truffle test --network <network-name>
    */
+
+  plugins: [
+    'truffle-plugin-verify'
+  ],
+
+  api_keys: {
+    bscscan: process.env.BSCSCAN_API_KEY
+  },
 
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
@@ -72,6 +81,23 @@ module.exports = {
     // network_id: 2111,   // This network is yours, in the cloud.
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
+
+    bsctest: {
+      provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, `https://data-seed-prebsc-1-s1.binance.org:8545`),
+      network_id: 97,
+      timeoutBlocks: 200,
+      confirmations: 5,
+      production: true    // Treats this network as if it was a public net. (default: false)
+    },
+
+    bscmain: {
+      provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, `https://bsc-dataseed1.binance.org`),
+      network_id: 56,
+      confirmations: 10,
+      timeoutBlocks: 200,
+      networkCheckTimeout: 1000000,
+      skipDryRun: true
+    },
   },
 
   // Set default mocha options here, use special reporters etc.
@@ -82,7 +108,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      // version: "0.5.1",    // Fetch exact version from solc-bin (default: truffle's version)
+       version: "0.8.4",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
