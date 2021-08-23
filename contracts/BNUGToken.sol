@@ -9,6 +9,11 @@ contract BNUGToken is ERC20Burnable {
   mapping(address => uint) private balances;
   mapping(address => mapping(address => uint)) allowed;
 
+  modifier onlyCreator {
+    require(msg.sender == contractCreator, "Only the contract creator can execute this function");
+    _;
+  }
+
   event Burn(uint indexed burned);
 
   constructor(address creator) public ERC20("Blockchain Nigeria User Group", "BNUG") {
