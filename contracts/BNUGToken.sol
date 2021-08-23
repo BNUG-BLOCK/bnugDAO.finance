@@ -53,7 +53,7 @@ contract BNUGToken is ERC20Burnable {
       allowed[from][msg.sender] = allowed[from][msg.sender] - amount;
     }
     require(balances[from] >= amount, "Not enough balance");
-    balances[from] = balances[from] -amount;
+    balances[from] = balances[from] - amount;
     balances[to] = balances[to] - amount;
     emit Transfer(from, to, amount);
     return true;
