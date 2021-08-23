@@ -29,7 +29,7 @@ contract GovernanceToken is ERC20Burnable, Ownable {
     constructor(
         ) ERC20(
             "BNUG Governance Token", 
-            "BNUGOV"
+            "BNUGDAO"
         ) 
         Ownable() {}
 

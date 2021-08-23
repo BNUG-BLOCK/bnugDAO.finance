@@ -56,5 +56,5 @@ DAO: Decentralized autonomous community
 
 
 
-**GovernanceToken: https://testnet.bscscan.com/address/0x51eE0D9FAd1e3F40C4d4f78c31522B8176187521#contracts**
+**GovernanceToken: https://testnet.bscscan.com/address/0xF2DEDCE1e760c42d8705F85C2a2F87Ff2f94b237#contracts**
 
