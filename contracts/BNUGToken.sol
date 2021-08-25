@@ -15,7 +15,7 @@ contract BNUGToken is ERC20Burnable, Ownable {
     address _token, 
     address _to, 
     uint256 amount) 
-  external onlyOwner() returns (bool) {
+  external onlyOwner() returns(bool success) {
     require(
       _token != address(0), 
       "Token address cannot be zero address"
@@ -28,6 +28,7 @@ contract BNUGToken is ERC20Burnable, Ownable {
         .balanceOf(address(this)) >= amount, 
         "Insufficient token balance"
       );
-    return IERC20(_token).transfer(_to, amount);
+    IERC20(_token).transfer(_to, amount);
+    return true;
   }
 }
