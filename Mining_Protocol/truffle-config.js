@@ -18,7 +18,8 @@
  *
  */
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+ const HDWalletProvider = require('@truffle/hdwallet-provider');
+ require('dotenv').config();
 // const infuraKey = "fj4jll3k.....";
 //
 // const fs = require('fs');
@@ -34,6 +35,14 @@ module.exports = {
    *
    * $ truffle test --network <network-name>
    */
+
+  plugins: [
+    'truffle-plugin-verify'
+  ],
+
+  api_keys: {
+    bscscan: process.env.BSCSCAN_API_KEY
+  },
 
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
@@ -54,7 +63,7 @@ module.exports = {
     // gas: 8500000,           // Gas sent with each transaction (default: ~6700000)
     // gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
     // from: <address>,        // Account to send txs from (default: accounts[0])
-    // websockets: true        // Enable EventEmitter interface for web3 (default: false)
+    // websocket: true        // Enable EventEmitter interface for web3 (default: false)
     // },
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
@@ -72,6 +81,26 @@ module.exports = {
     // network_id: 2111,   // This network is yours, in the cloud.
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
+
+    bsctest: {
+      provider: () => new HDWalletProvider(process.env.PRIVATE_KEY, `https://data-seed-prebsc-1-s1.binance.org:8545`),
+      network_id: 97,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true
+    },
+
+    bscmain: {
+      provider: () => new HDWalletProvider(
+        process.env.PRIVATE_KEY, 
+        `https://bsc-dataseed1.binance.org`
+      ),
+      network_id: 56,
+      confirmations: 10,
+      timeoutBlocks: 200,
+      networkCheckTimeout: 1000000,
+      skipDryRun: true
+    }
   },
 
   // Set default mocha options here, use special reporters etc.
@@ -82,7 +111,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-       version: "0.6.12",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.6.12",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
@@ -92,5 +121,15 @@ module.exports = {
       //  evmVersion: "byzantium"
       // }
     }
+  },
+
+  // Truffle DB is currently disabled by default; to enable it, change enabled: false to enabled: true
+  //
+  // Note: if you migrated your contracts prior to enabling this field in your Truffle project and want
+  // those previously migrated contracts available in the .db directory, you will need to run the following:
+  // $ truffle migrate --reset --compile-all
+
+  db: {
+    enabled: false
   }
 };

@@ -338,7 +338,8 @@ library PancakeLibrary {
                 hex'ff',
                 factory,
                 keccak256(abi.encodePacked(token0, token1)),
-                hex'd0d4c4cd0848c93cb4fd1f498d7013ee6bfb25783ea21593d5834f5d250ece66' // init code hash
+                //hex'd0d4c4cd0848c93cb4fd1f498d7013ee6bfb25783ea21593d5834f5d250ece66' // init code hash
+                hex'ecba335299a6693cb2ebc4782e74669b84290b6378ea3a3873c7231a8d7d1074'   // Change to INIT_CODE_PAIR_HASH of Pancake Factory
             ))));
     }
 
@@ -436,7 +437,7 @@ contract BNUGDAO_Mining {
         address indexed sender,
         uint amount
     );
-
+    
     constructor(
         address _BNUGAddress,
         address _BNUGDAOAddress) 
@@ -445,8 +446,8 @@ contract BNUGDAO_Mining {
         BNUG = IERC20(_BNUGAddress);
         BNUGDAO = IERC20(_BNUGDAOAddress);
         
-        pancakeRouter = IPancakeRouter(0xD99D1c33F9fC3444f8101754aBC46c52416550D1);
-        iPancakeFactory = IPancakeFactory(0x6725F303b657a9451d8BA641348b6761A6CC7a17); 
+        pancakeRouter = IPancakeRouter(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
+        iPancakeFactory = IPancakeFactory(pancakeRouter.factory());
 
         address _lpToken = iPancakeFactory.getPair(
             _BNUGAddress, 
@@ -462,11 +463,11 @@ contract BNUGDAO_Mining {
     }
     
     function addLiquidity(
-        uint _amount)
+        uint _BNUGAmount)
         external payable returns(bool success) {
         
         uint rate = _priceOracle(
-            _amount, 
+            _BNUGAmount, 
             address(BNUG),
             pancakeRouter.WETH()
         );
@@ -480,7 +481,7 @@ contract BNUGDAO_Mining {
             BNUG.transferFrom(
                 msg.sender,
                 address(this),
-                _amount
+                _BNUGAmount
             ),
             "Error in withdrawing tokens from sender"
         );
@@ -489,11 +490,13 @@ contract BNUGDAO_Mining {
         
         if (user.checkpoint == 0) user.checkpoint = block.number;
         else _distribute(msg.sender, user.lpAmount);
+        
+        BNUG.approve(address(pancakeRouter), _BNUGAmount);
 
         (uint amountBNUG, uint amountBNB, uint liquidity) = 
         pancakeRouter.addLiquidityETH{value: msg.value}(
             address(BNUG), 
-            _amount, 
+            _BNUGAmount, 
             0, 
             0, 
             address(this), 
@@ -567,9 +570,9 @@ contract BNUGDAO_Mining {
         return true;
     }
 
-    function getUserAvailable(
+    function getUserClaimableRewards(
         address _user)
-        public returns(uint available) {
+        public view returns(uint available) {
 
         User memory user = _users[_user];
         
@@ -579,22 +582,41 @@ contract BNUGDAO_Mining {
             * REWARD_PER_BLOCK
         );
     }
+    
+    function getUserLPAmount(
+        address _user)
+        public view returns(uint LP_Amount) {
+
+        LP_Amount = _users[_user].lpAmount;
+    }
+    
+    function getTotalLPAmount(
+        ) public view returns(uint Total_LP_Amount) {
+
+        Total_LP_Amount = lpToken.balanceOf(address(this));
+    }
 
     function priceOracle(
         uint _bnugAmount)
-        external returns(uint bnbRate) {
+        external view returns(uint rate) {
 
-        _priceOracle(
+        rate = _priceOracle(
             _bnugAmount, 
             address(BNUG),
             pancakeRouter.WETH()
         );
     }
+    
+    function lpAddress(
+        ) external view returns(address LP_Address) {
+        
+        return address(lpToken);
+    }
 
     function _distribute(
         address _user,
         uint _liquidity) 
-        internal {
+        private {
         
         User storage user = _users[_user];
         uint checkpoint = user.checkpoint;
@@ -616,7 +638,7 @@ contract BNUGDAO_Mining {
         uint _amount, 
         address _tokenA, 
         address _tokenB) 
-        internal view returns(uint tokenBAmount) {
+        private view returns(uint rate) {
         
         (uint reserveA, uint reserveB) = PancakeLibrary.getReserves(
             address(iPancakeFactory), _tokenA, _tokenB
