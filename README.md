@@ -47,11 +47,12 @@ Next step would be to create the DAO which is run by BNUGDAO token.
 
 In conclusion:
 
-We will be building the following:
+We will be building the following for the projects first phase:
 
 BNUG: Project token
 BNUGDAO: Governance token
 BNUGLM: Liquidity mining protocol
 DAO: Decentralized autonomous community
+*BNUG Staking contract
 
 
