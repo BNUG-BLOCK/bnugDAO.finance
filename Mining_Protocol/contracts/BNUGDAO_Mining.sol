@@ -2,233 +2,19 @@
 
 pragma solidity 0.6.12;
 
-library SafeMath {
-    /**
-     * @dev Returns the addition of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `+` operator.
-     *
-     * Requirements:
-     *
-     * - Addition cannot overflow.
-     */
-    function add(uint256 a, uint256 b) internal pure returns (uint256) {
-        uint256 c = a + b;
-        require(c >= a, "SafeMath: addition overflow");
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-        return c;
-    }
-
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     *
-     * - Subtraction cannot overflow.
-     */
-    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-        return sub(a, b, "SafeMath: subtraction overflow");
-    }
-
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     *
-     * - Subtraction cannot overflow.
-     */
-    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b <= a, errorMessage);
-        uint256 c = a - b;
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the multiplication of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `*` operator.
-     *
-     * Requirements:
-     *
-     * - Multiplication cannot overflow.
-     */
-    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
-        // benefit is lost if 'b' is also tested.
-        // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
-        if (a == 0) {
-            return 0;
-        }
-
-        uint256 c = a * b;
-        require(c / a == b, "SafeMath: multiplication overflow");
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
-    function div(uint256 a, uint256 b) internal pure returns (uint256) {
-        return div(a, b, "SafeMath: division by zero");
-    }
-
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts with custom message on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
-    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b > 0, errorMessage);
-        uint256 c = a / b;
-        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * Reverts when dividing by zero.
-     *
-     * Counterpart to Solidity's `%` operator. This function uses a `revert`
-     * opcode (which leaves remaining gas untouched) while Solidity uses an
-     * invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
-    function mod(uint256 a, uint256 b) internal pure returns (uint256) {
-        return mod(a, b, "SafeMath: modulo by zero");
-    }
-
-    /**
-     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * Reverts with custom message when dividing by zero.
-     *
-     * Counterpart to Solidity's `%` operator. This function uses a `revert`
-     * opcode (which leaves remaining gas untouched) while Solidity uses an
-     * invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
-    function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b != 0, errorMessage);
-        return a % b;
-    }
-}
-
-interface IERC20 {
-  /**
-   * @dev Returns the amount of tokens in existence.
-   */
-  function totalSupply() external view returns (uint256);
-
-  /**
-   * @dev Returns the amount of tokens owned by `account`.
-   */
-  function balanceOf(address account) external view returns (uint256);
-
-  /**
-   * @dev Moves `amount` tokens from the caller's account to `recipient`.
-   *
-   * Returns a boolean value indicating whether the operation succeeded.
-   *
-   * Emits a {Transfer} event.
-   */
-  function transfer(address recipient, uint256 amount) external returns (bool);
-
+interface IBNUGDAO is IERC20 {
+  
   /**
    * @dev Creates `_amount` tokens from the null account to `_to`.
    *
    * Emits a {Transfer} event.
    */
   function mintToken(address _to, uint _amount) external;
-
-  /**
-   * @dev Returns the remaining number of tokens that `spender` will be
-   * allowed to spend on behalf of `owner` through {transferFrom}. This is
-   * zero by default.
-   *
-   * This value changes when {approve} or {transferFrom} are called.
-   */
-  function allowance(address owner, address spender)
-    external
-    view
-    returns (uint256);
-
-  /**
-   * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
-   *
-   * Returns a boolean value indicating whether the operation succeeded.
-   *
-   * IMPORTANT: Beware that changing an allowance with this method brings the risk
-   * that someone may use both the old and the new allowance by unfortunate
-   * transaction ordering. One possible solution to mitigate this race
-   * condition is to first reduce the spender's allowance to 0 and set the
-   * desired value afterwards:
-   * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-   *
-   * Emits an {Approval} event.
-   */
-  function approve(address spender, uint256 amount) external returns (bool);
-
-  /**
-   * @dev Moves `amount` tokens from `sender` to `recipient` using the
-   * allowance mechanism. `amount` is then deducted from the caller's
-   * allowance.
-   *
-   * Returns a boolean value indicating whether the operation succeeded.
-   *
-   * Emits a {Transfer} event.
-   */
-  function transferFrom(
-    address sender,
-    address recipient,
-    uint256 amount
-  ) external returns (bool);
-
-  /**
-   * @dev Emitted when `value` tokens are moved from one account (`from`) to
-   * another (`to`).
-   *
-   * Note that `value` may be zero.
-   */
-  event Transfer(address indexed from, address indexed to, uint256 value);
-
-  /**
-   * @dev Emitted when the allowance of a `spender` for an `owner` is set by
-   * a call to {approve}. `value` is the new allowance.
-   */
-  event Approval(address indexed owner, address indexed spender, uint256 value);
-
 }
 
 interface IPancakeFactory {
@@ -400,30 +186,40 @@ library PancakeLibrary {
     }
 }
 
-contract BNUGDAO_Mining {
+contract BNUGDAO_Mining is 
+    Ownable, 
+    ReentrancyGuard {
 
     using SafeMath for uint;
-
+   
+    IBNUGDAO private BNUGDAO;
     IERC20 private BNUG;
-    IERC20 private BNUGDAO;
     IERC20 private lpToken;
+    
     IPancakeRouter private pancakeRouter;
     IPancakeFactory private iPancakeFactory;
     
-    uint constant public REWARD_PER_BLOCK = 1;
+    uint public liquidityRewardPerBlock;
+    uint public stakingRewardPerBlock;
 
     struct User {
         uint lpAmount;
+        uint stakeAmount;
         uint checkpoint;
     }
 
     mapping(address => User) private _users;
     
-    event NewStake(
+    event LiquidityAdded(
         address indexed sender, 
         uint liquidity, 
         uint amountBNB, 
         uint amountBNUG
+    );
+
+    event StakeAdded(
+        address indexed sender, 
+        uint amount
     );
 
     event LiquidityWithdrawn(
@@ -433,18 +229,34 @@ contract BNUGDAO_Mining {
         uint amountBNUG
     );
 
+    event StakeWithdrawn(
+        address indexed sender,
+        uint amountBNUG
+    );
+
     event NewClaim(
         address indexed sender,
         uint amount
     );
+
+    event BlockRewardSet(
+        address owner,
+        uint newreward,
+        string rewardType
+    );
     
     constructor(
         address _BNUGAddress,
-        address _BNUGDAOAddress) 
-        public {
+        address _BNUGDAOAddress,
+        uint _liquidityRewardPerBlock,
+        uint _stakingRewardPerBlock) 
+        public Ownable() {
     
         BNUG = IERC20(_BNUGAddress);
-        BNUGDAO = IERC20(_BNUGDAOAddress);
+        BNUGDAO = IBNUGDAO(_BNUGDAOAddress);
+
+        liquidityRewardPerBlock = _liquidityRewardPerBlock;
+        stakingRewardPerBlock = _stakingRewardPerBlock;
         
         pancakeRouter = IPancakeRouter(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
         iPancakeFactory = IPancakeFactory(pancakeRouter.factory());
@@ -464,7 +276,7 @@ contract BNUGDAO_Mining {
     
     function addLiquidity(
         uint _BNUGAmount)
-        external payable returns(bool success) {
+        external payable nonReentrant() returns(bool success) {
         
         uint rate = _priceOracle(
             _BNUGAmount, 
@@ -489,7 +301,7 @@ contract BNUGDAO_Mining {
         User storage user = _users[msg.sender];
         
         if (user.checkpoint == 0) user.checkpoint = block.number;
-        else _distribute(msg.sender, user.lpAmount);
+        else _distribute(msg.sender);
         
         BNUG.approve(address(pancakeRouter), _BNUGAmount);
 
@@ -505,7 +317,7 @@ contract BNUGDAO_Mining {
         
         user.lpAmount = user.lpAmount.add(liquidity);
 
-        emit NewStake(
+        emit LiquidityAdded(
             msg.sender, liquidity, 
             amountBNB, amountBNUG
         );
@@ -514,7 +326,7 @@ contract BNUGDAO_Mining {
 
     function removeLiquidity(
         uint _lpAmount) 
-        external returns(bool success) {
+        external nonReentrant() returns(bool success) {
         
         User storage user = _users[msg.sender];
         uint liquidity = user.lpAmount;
@@ -525,12 +337,14 @@ contract BNUGDAO_Mining {
             "Not enough liquidity"
         );
 
+        _distribute(msg.sender);  
+
         user.lpAmount = liquidity.sub(_lpAmount); 
         
         lpToken.approve(
             address(pancakeRouter), 
             _lpAmount
-        );                                         
+        );                                       
         
         (uint amountBNUG, uint amountBNB) = 
         pancakeRouter.removeLiquidityETH(
@@ -541,10 +355,11 @@ contract BNUGDAO_Mining {
             msg.sender,
             block.timestamp
         );
-        
-        _distribute(msg.sender, liquidity);
 
-        if (user.lpAmount == 0) user.checkpoint = 0;
+        if (
+            user.lpAmount == 0 
+            && user.stakeAmount == 0
+        ) user.checkpoint = 0;
         
         emit LiquidityWithdrawn(
             msg.sender, _lpAmount, 
@@ -553,34 +368,119 @@ contract BNUGDAO_Mining {
         return true;
     }
 
-    function claim()
-        external returns(bool success) {
-
-        User storage user = _users[msg.sender];
-        uint checkpoint = user.checkpoint;  
-        uint liquidity = user.lpAmount;
+    function stake(
+        uint _bnugAmount)
+        external nonReentrant() returns(bool success) {
 
         require(
-            block.number > checkpoint
-            && liquidity > 0,
+            BNUG.transferFrom(
+                msg.sender, 
+                address(this), 
+                _bnugAmount
+            ),
+            "Error in withdrawing tokens from sender"
+        );
+
+        User storage user = _users[msg.sender];
+        
+        if (user.checkpoint == 0) user.checkpoint = block.number;
+        else _distribute(msg.sender);
+
+        user.stakeAmount = user.stakeAmount.add(_bnugAmount);
+
+        emit StakeAdded(msg.sender, _bnugAmount);
+        return true;
+    }
+
+    function unstake(
+        uint _bnugAmount)
+        external nonReentrant() returns(bool success) {
+
+        User storage user = _users[msg.sender];
+        uint stakeAmount = user.stakeAmount;
+        
+        require(
+            _bnugAmount > 0 
+            && _bnugAmount <= stakeAmount, 
+            "Not enough stakes"
+        );
+
+        _distribute(msg.sender);  
+
+        user.stakeAmount = stakeAmount.sub(_bnugAmount);
+        BNUG.transfer(msg.sender, _bnugAmount);
+
+        if (
+            user.lpAmount == 0 
+            && user.stakeAmount == 0
+        ) user.checkpoint = 0;
+        
+        emit StakeWithdrawn(msg.sender, _bnugAmount);
+        return true;
+    }
+
+    function claim()
+        external nonReentrant() returns(bool success) {
+
+        User memory user = _users[msg.sender];
+
+        require(
+            block.number > user.checkpoint
+            && (
+                user.lpAmount > 0 
+                || user.stakeAmount > 0
+            ),
             "Nothing available to claim"
         );
 
-        _distribute(msg.sender, liquidity);
+        _distribute(msg.sender);
         return true;
+    }
+
+    function setLiquidityRewardPerBlock(
+        uint _newReward)
+        external onlyOwner() {
+
+        require(
+            liquidityRewardPerBlock != _newReward,
+            "Error: already set"
+        );
+
+        liquidityRewardPerBlock = _newReward;
+        emit BlockRewardSet(msg.sender, _newReward, "liquidity");
+    }
+
+    function setStakingRewardPerBlock(
+        uint _newReward)
+        external onlyOwner() {
+
+        require(
+            stakingRewardPerBlock != _newReward,
+            "Error: already set"
+        );
+
+        stakingRewardPerBlock = _newReward;
+        emit BlockRewardSet(msg.sender, _newReward, "staking");
     }
 
     function getUserClaimableRewards(
         address _user)
-        public view returns(uint available) {
+        public view returns(uint fromLP, uint fromStaking, uint total) {
 
         User memory user = _users[_user];
-        
-        return (
-            user.lpAmount 
-            * (block.number - user.checkpoint) 
-            * REWARD_PER_BLOCK
-        );
+
+        uint checkpoint = user.checkpoint;
+        uint divFactor = 10 ** 6;
+        (uint bnugProvided,) = getUserLiquidity(_user);
+        fromLP = (
+            bnugProvided
+            .mul((block.number.sub(checkpoint))))
+            .mul(liquidityRewardPerBlock.div(divFactor));
+        fromStaking = (
+            user.stakeAmount
+            .mul((block.number.sub(checkpoint))))
+            .mul(stakingRewardPerBlock.div(divFactor));
+        total = fromLP.add(fromStaking);
     }
     
     function getUserLPAmount(
@@ -613,24 +513,38 @@ contract BNUGDAO_Mining {
         return address(lpToken);
     }
 
+    function getUserLiquidity(
+        address _user) 
+        public view returns(uint provided_BNUG, uint provided_BNB) {
+        
+        uint total = lpToken.totalSupply();
+        uint SCALAR = 10 ^ 32;
+        uint ratio = ((_users[_user].lpAmount).mul(SCALAR)).div(total);
+        uint bnugHeld = BNUG.balanceOf(address(lpToken));
+        uint bnbHeld = IERC20(
+            pancakeRouter.WETH()).balanceOf(address(lpToken)
+        );
+        
+        return (
+            (ratio.mul(bnugHeld)).div(SCALAR), 
+            (ratio.mul(bnbHeld)).div(SCALAR)
+        );
+    }
+
     function _distribute(
-        address _user,
-        uint _liquidity) 
+        address _user) 
         private {
         
         User storage user = _users[_user];
         uint checkpoint = user.checkpoint;
         
-        if (block.number > checkpoint 
-            && checkpoint != 0) {
-            uint rewards = (
-                _liquidity 
-                * (block.number - checkpoint) 
-                * REWARD_PER_BLOCK
-            );
-            BNUGDAO.mintToken(_user, rewards);
-            user.checkpoint = block.number;
-            emit NewClaim(msg.sender, rewards);
+        if (block.number > checkpoint) {
+            (,,uint rewards) = getUserClaimableRewards(_user);
+            if (rewards > 0) {
+                BNUGDAO.mintToken(_user, rewards);
+                user.checkpoint = block.number;
+                emit NewClaim(msg.sender, rewards);
+            }
         }
     }
 
