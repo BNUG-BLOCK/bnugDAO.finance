@@ -489,6 +489,13 @@ contract BNUGDAO_Mining is
 
         LP_Amount = _users[_user].lpAmount;
     }
+
+    function getUserStakeAmount(
+        address _user)
+        public view returns(uint stake_Amount) {
+
+        stake_Amount = _users[_user].stakeAmount;
+    }
     
     function getTotalLPAmount(
         ) public view returns(uint Total_LP_Amount) {
