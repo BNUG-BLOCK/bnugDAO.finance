@@ -60,5 +60,5 @@ DAO: Decentralized autonomous community
 
 **BNUGToken: https://testnet.bscscan.com/address/0x6C233982566E7f714C9FB31508Ec6f4A5d9C5f12#contracts**
 
-**BNUGDAO_Mining: https://testnet.bscscan.com/address/0xAbDeC965252E84B254E7C128F9131512C29EFbD6#contracts**
+**BNUGDAO_Mining: https://testnet.bscscan.com/address/0xDd9e02299c0536FEb304a2989656Fe58bB22e6bf#contracts**
 

@@ -201,6 +201,7 @@ contract BNUGDAO_Mining is
     
     uint public liquidityRewardPerBlock;
     uint public stakingRewardPerBlock;
+    uint public totalStaked;
 
     struct User {
         uint lpAmount;
@@ -386,6 +387,7 @@ contract BNUGDAO_Mining is
         if (user.checkpoint == 0) user.checkpoint = block.number;
         else _distribute(msg.sender);
 
+        totalStaked += _bnugAmount;
         user.stakeAmount = user.stakeAmount.add(_bnugAmount);
 
         emit StakeAdded(msg.sender, _bnugAmount);
@@ -408,6 +410,7 @@ contract BNUGDAO_Mining is
         _distribute(msg.sender);  
 
         user.stakeAmount = stakeAmount.sub(_bnugAmount);
+        totalStaked -= _bnugAmount;
         BNUG.transfer(msg.sender, _bnugAmount);
 
         if (
